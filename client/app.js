@@ -18,6 +18,7 @@ const login = event => {
     alert('Username field cannot be empty.');
   } else {
     userName = userNameInput.value;
+    socket.emit('join', userName);
     loginForm.classList.remove('show');
     messagesSection.classList.add('show');
   }
