@@ -1,3 +1,4 @@
+const socket = io();
 
 const loginForm = document.querySelector('#welcome-form');
 const messagesSection = document.querySelector('#messages-section');
@@ -5,6 +6,8 @@ const messagesList = document.querySelector('#messages-list');
 const addMessageForm = document.querySelector('#add-messages-form');
 const userNameInput = document.querySelector('#username');
 const messageContentInput = document.querySelector('#message-content');
+
+socket.on('message', ({ author, content }) => addMessage(author, content));
 
 let userName = '';
 
@@ -23,12 +26,13 @@ const login = event => {
 const sendMessage = event => {
   event.preventDefault();
 
-  const messageContent = messageContentInput.value;
+  let messageContent = messageContentInput.value;
 
   if (!messageContent.trim()) {
     alert('Message content cannot be empty. Please enter a message.');
   } else {
     addMessage(userName, messageContent);
+    socket.emit('message', { author: userName, content: messageContent })
     messageContentInput.value = '';
   }
 };
@@ -46,6 +50,6 @@ function addMessage(author, content) {
     `;
     messagesList.appendChild(message);
   }
-  
+
 loginForm.addEventListener('submit', (event) => login(event));
 addMessageForm.addEventListener('submit', (event) => sendMessage(event))
